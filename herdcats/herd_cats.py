@@ -1,3 +1,4 @@
+
 """Simulate a search for cats by their owners on the London underground"""
 
 import argparse
@@ -21,9 +22,15 @@ def main():
                         type=int,
                         help=help)
     args = parser.parse_args()
+    herd_cats(args.number)
+
+
+def herd_cats(number):
     stations = _load_stations()
     connections = _load_connections()
-    herd_cats(args.number, stations, connections)
+    owners = _position_fauna(number, stations)
+    cats = _position_fauna(number, stations, owners)
+    _run_simulation(owners, cats, stations, connections)
 
 
 def _load_stations():
@@ -56,12 +63,6 @@ def _load_connections():
 
 def _open_data_file(file_name):
     return open(os.path.join(HERE, 'data', file_name))
-
-
-def herd_cats(number, stations, connections):
-    owners = _position_fauna(number, stations)
-    cats = _position_fauna(number, stations, owners)
-    _run_simulation(owners, cats, stations, connections)
 
 
 def _position_fauna(number, stations, others=None):
@@ -206,10 +207,11 @@ def _print_summary(owners):
     found_cats = len([o for o in owners if 'found' in o])
     print 'Total number of cats: %s' % total_cats
     print 'Number of cats found: %s' % found_cats
-    turns_to_find_each_cat = [o['found'] for o in owners if 'found' in o]
-    average_turns = sum(turns_to_find_each_cat) / found_cats
-    print ('Average number of movements required to find a cat: %s' %
-           average_turns)
+    if found_cats:
+        turns_to_find_each_cat = [o['found'] for o in owners if 'found' in o]
+        average_turns = sum(turns_to_find_each_cat) / found_cats
+        print ('Average number of movements required to find a cat: %s' %
+               average_turns)
 
 
 if __name__ == '__main__':

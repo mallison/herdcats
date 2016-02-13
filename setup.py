@@ -74,6 +74,7 @@ setup(
     extras_require={
         'dev': ['check-manifest'],
         'test': [
+            'tox',
             'pytest',
             'pytest-mock',
             'pytest-cov'
@@ -84,7 +85,7 @@ setup(
     # installed, specify them here.  If using Python 2.6 or less, then these
     # have to be included in MANIFEST.in as well.
     package_data={
-        'herdcats': ['herdcats/data/*csv'],
+        'herdcats': ['data/*.csv']
     },
 
     # To provide executable scripts, use entry points in preference to the

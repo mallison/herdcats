@@ -2,7 +2,7 @@ import contextlib
 import textwrap
 from cStringIO import StringIO
 
-import herd_cats
+from herdcats import herd_cats
 
 
 def test_load_stations(monkeypatch):
@@ -36,8 +36,8 @@ def test_load_connections(monkeypatch):
 
 
 def test_N_owners_and_cats_created(mocker):
-    mocker.patch('herd_cats._print_summary')
-    stub = mocker.patch('herd_cats._position_fauna')
+    mocker.patch('herdcats.herd_cats._print_summary')
+    stub = mocker.patch('herdcats.herd_cats._position_fauna')
     herd_cats.herd_cats(3, {}, {})
     expected = [
         (3, {}),
@@ -47,9 +47,10 @@ def test_N_owners_and_cats_created(mocker):
 
 
 def test_simulation_is_run(mocker):
-    mocker.patch('herd_cats._print_summary')
-    mocker.patch('herd_cats._position_fauna').side_effect = ['owners', 'cats']
-    stub = mocker.patch('herd_cats._run_simulation')
+    mocker.patch('herdcats.herd_cats._print_summary')
+    mocker.patch('herdcats.herd_cats._position_fauna').side_effect = [
+        'owners', 'cats']
+    stub = mocker.patch('herdcats.herd_cats._run_simulation')
     herd_cats.herd_cats(3, 'stations', 'connections')
     stub.assert_called_once_with('owners', 'cats', 'stations', 'connections')
 
@@ -75,19 +76,20 @@ def test_cat_and_owner_not_initially_positioned_at_same_station():
 
 
 def test_simulation_stops_after_MAX_TURNS_turns_if_all_cats_not_found(mocker):
-    mocker.patch('herd_cats._print_summary')
-    mocker.patch('herd_cats._are_all_cats_found').return_value = False
-    mocker.patch('herd_cats.MAX_TURNS', 5)
-    run_turns = mocker.patch('herd_cats._run_turn')
+    mocker.patch('herdcats.herd_cats._print_summary')
+    mocker.patch('herdcats.herd_cats._are_all_cats_found').return_value = False
+    mocker.patch('herdcats.herd_cats.MAX_TURNS', 5)
+    run_turns = mocker.patch('herdcats.herd_cats._run_turn')
     herd_cats._run_simulation([], [], {}, {})
     assert run_turns.call_count == 5
 
 
 def test_simulation_stops_if_all_cats_found(mocker):
-    mocker.patch('herd_cats._print_summary')
-    mocker.patch('herd_cats._are_all_cats_found').side_effect = [False, False, True]
-    mocker.patch('herd_cats.MAX_TURNS', 5)
-    run_turns = mocker.patch('herd_cats._run_turn')
+    mocker.patch('herdcats.herd_cats._print_summary')
+    mocker.patch('herdcats.herd_cats._are_all_cats_found').side_effect = [
+        False, False, True]
+    mocker.patch('herdcats.herd_cats.MAX_TURNS', 5)
+    run_turns = mocker.patch('herdcats.herd_cats._run_turn')
     herd_cats._run_simulation([], [], {}, {})
     assert run_turns.call_count == 2
 
@@ -152,7 +154,7 @@ def test_item_doesnt_move_if_all_possible_stations_closed():
     herd_cats._move_if_possible(owner, possible, stations)
     assert owner['moves'] == [2]
 
-    
+
 # TODO test_move_owner test_move_owners?
 def test_are_owner_and_cat_at_same_station_when_true():
     owner = {'moves': [1, 2, 5]}

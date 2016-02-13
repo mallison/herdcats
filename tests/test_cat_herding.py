@@ -151,7 +151,8 @@ def test_get_owners_who_found_cats_this_turn(mocker):
             'found': 3
         }
     ]
-    get_current_station = mocker.patch('herdcats.herd_cats._get_current_station')
+    get_current_station = mocker.patch(
+        'herdcats.herd_cats._get_current_station')
     get_current_station.return_value = 'station'
     turn = 3
     result = herd_cats._get_owners_who_found_cats_this_turn(owners, turn)

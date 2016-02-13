@@ -1,5 +1,14 @@
+build/
+dist/
 *.pyc
 *~
+*.egg-info
+
+# for tox and py.test
+.tox
+.cache
+
+# for coverage.py
 htmlcov
 .coverage
 *,cover

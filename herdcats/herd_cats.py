@@ -2,19 +2,24 @@
 
 import argparse
 import csv
+import os
 import random
 from collections import defaultdict
+from os import path
 
 MAX_TURNS = 100000
+HERE = path.abspath(path.dirname(__file__))
 
 
 def main():
-    parser = argparse.ArgumentParser(
-        description='Simulate a search for cats by their owners on the London underground.'
-    )
+    description = ('Simulate a search for cats '
+                   'by their owners on the London underground.')
+    parser = argparse.ArgumentParser(description=description)
+    help = ('Specify the number of owners '
+            'and cats for the simulation')
     parser.add_argument('number',
                         type=int,
-                        help='Specify the number of owners and cats for the simulation')
+                        help=help)
     args = parser.parse_args()
     stations = _load_stations()
     connections = _load_connections()
@@ -22,20 +27,22 @@ def main():
 
 
 def _load_stations():
-    with open('tfl_stations.csv') as f:
+    with _open_data_file('tfl_stations.csv') as f:
         reader = csv.reader(f)
         return dict(
-            (int(station_id),
-             {
-                 'name': name,
-                 'closed': False
-             }) for station_id, name in reader
+            (
+                int(station_id),
+                {
+                    'name': name,
+                    'closed': False
+                }
+            ) for station_id, name in reader
         )
 
 
 def _load_connections():
     connections = defaultdict(list)
-    with open('tfl_connections.csv') as f:
+    with _open_data_file('tfl_connections.csv') as f:
         reader = csv.reader(f)
         for station1, station2 in reader:
             station1 = int(station1)
@@ -47,19 +54,26 @@ def _load_connections():
     return connections
 
 
+def _open_data_file(file_name):
+    return open(os.path.join(HERE, 'data', file_name))
+
+
 def herd_cats(number, stations, connections):
     owners = _position_fauna(number, stations)
     cats = _position_fauna(number, stations, owners)
     _run_simulation(owners, cats, stations, connections)
 
 
-def _position_fauna(number, stations, other=None):
+def _position_fauna(number, stations, others=None):
     """Set the initial random position for an owner or cat."""
     station_ids = stations.keys()
     fauna = []
     for i in xrange(number):
         random_station = None
-        while random_station is None or other and other[i]['moves'][0] == random_station:
+        while (
+                random_station is None or
+                others and others[i]['moves'][0] == random_station
+        ):
             random_station = random.choice(station_ids)
         fauna.append({
             'moves': [random_station]
@@ -79,7 +93,8 @@ def _run_turn(turn, owners, cats, stations, connections):
     _move_owners(owners, connections, stations)
     _move_cats(cats, connections, stations)
     _mark_reunited_owners_and_cats(owners, cats, turn)
-    owners_who_found_cats_this_turn = _get_owners_who_found_cats_this_turn(owners, turn)
+    owners_who_found_cats_this_turn = _get_owners_who_found_cats_this_turn(
+        owners, turn)
     _close_stations_where_cats_found(owners_who_found_cats_this_turn, stations)
     _report_cats_found_this_turn(owners_who_found_cats_this_turn, stations)
 
@@ -99,21 +114,24 @@ def _move_cats(cats, connections, stations):
 
 def _move(items, connections, stations, mover_func):
     for item in items:
-        if not 'found' in item:
+        if 'found' not in item:
             mover_func(item, connections, stations)
 
 
 def _move_owner(owner, connections, stations):
     current_station = _get_current_station(owner)
     visited_stations = _get_visisted_stations(owner)
-    accessible_stations = _get_accessible_stations(current_station, connections)
-    possible_stations = _get_possible_stations(accessible_stations, visited_stations)
+    accessible_stations = _get_accessible_stations(
+        current_station, connections)
+    possible_stations = _get_possible_stations(
+        accessible_stations, visited_stations)
     _move_if_possible(owner, possible_stations, stations)
 
 
 def _move_cat(cat, connections, stations):
     current_station = _get_current_station(cat)
-    accessible_stations = _get_accessible_stations(current_station, connections)
+    accessible_stations = _get_accessible_stations(
+        current_station, connections)
     _move_if_possible(cat, accessible_stations, stations)
 
 
@@ -170,7 +188,9 @@ def _close_stations_where_cats_found(owner_ids_who_found_cats, stations):
 
 def _report_cats_found_this_turn(found_this_turn, stations):
     for owner_id, station_id in found_this_turn:
-        print 'Owner {owner_id} found cat {owner_id} - {station} station is now closed.'.format(
+        print (
+            'Owner {owner_id} found cat {owner_id}'
+            ' - {station} station is now closed.').format(
             owner_id=owner_id,
             station=stations[station_id]['name']
         )
@@ -188,7 +208,8 @@ def _print_summary(owners):
     print 'Number of cats found: %s' % found_cats
     turns_to_find_each_cat = [o['found'] for o in owners if 'found' in o]
     average_turns = sum(turns_to_find_each_cat) / found_cats
-    print 'Average number of movements required to find a cat: %s' % average_turns
+    print ('Average number of movements required to find a cat: %s' %
+           average_turns)
 
 
 if __name__ == '__main__':

@@ -1,4 +1,3 @@
-
 """Simulate a search for cats by their owners on the London underground"""
 
 import argparse

@@ -93,7 +93,7 @@ setup(
     # pip to create the appropriate form of executable for the target platform.
     entry_points={
         'console_scripts': [
-            'herd_cats=herdcats:main',
+            'herd_cats=herdcats.herd_cats:main',
         ],
     },
 )

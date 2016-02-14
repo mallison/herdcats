@@ -10,5 +10,5 @@ def print_summary(owners_and_cats):
     print 'Number of cats found: %s' % found_cats
     if found_cats:
         average_turns = metrics.get_average_turns_to_find_cat(owners_and_cats)
-        print ('Average number of movements required to find a cat: %s' %
+        print ('Average number of movements required to find a cat: %d' %
                average_turns)

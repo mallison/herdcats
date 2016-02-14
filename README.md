@@ -2,8 +2,8 @@
 
 ## Installation
 
-    pip install XXXX
+    pip install git+https://github.com/mallison/herdcats.git
 
 ## Usage
 
-    herd_cats 20
+    herd_cats <number of owners/cats>

@@ -45,7 +45,8 @@ def test_summary_prints_number_of_cats_found(mocker, capsys):
 def test_summary_prints_average_moves_to_find_cat(mocker, capsys):
     mocker.patch('herdcats.metrics.get_total_cats')
     mocker.patch('herdcats.metrics.get_total_cats_found')
-    get_average = mocker.patch('herdcats.metrics.get_average_turns_to_find_cat')
+    get_average = mocker.patch(
+        'herdcats.metrics.get_average_turns_to_find_cat')
     get_average.return_value = 2
     owners_and_cats = []
 

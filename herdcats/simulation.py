@@ -1,7 +1,7 @@
-MAX_TURNS = 100000
-
 from . import players
 from . import reporting
+
+MAX_TURNS = 100000
 
 
 def run(number_of_cats_and_owners):

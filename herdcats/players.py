@@ -107,7 +107,7 @@ def _print_found_cat(owner_id, found_at):
         ' - {station} station is now closed.').format(
             owner_id=owner_id,
             station=tube.get_station_name(found_at)
-        )
+    )
 
 
 def _is_cat_found_this_turn(owner_and_cat, turn):

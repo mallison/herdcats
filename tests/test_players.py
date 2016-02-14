@@ -272,7 +272,8 @@ def test_each_cat_found_this_turn_is_handled(mocker):
     ]
 
 
-def test_cat_is_found_this_turn_when_not_already_found_and_both_at_same_station(mocker):
+def test_cat_found_this_turn_when_not_already_found_and_both_at_same_station(
+        mocker):
     mocker.patch('herdcats.players._is_cat_found').return_value = True
     mocker.patch(
         'herdcats.players._cat_and_owner_moved_this_turn'

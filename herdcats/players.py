@@ -10,18 +10,15 @@ def create(number):
     return owner_and_cats
 
 
-def move(owner_and_cats, turn):
+def move(owners_and_cats, turn):
     """Returns list of owners and cats moved to the next possible station."""
     # We assume all owners and cats move on at the same time and each journey
     # takes the same time so we don't need to check for cats being found
     # after each individual owner or cat move
-    moved = [
-        _attempt_move(owner_and_cat) for owner_and_cat in owner_and_cats
-    ]
-    for i, owner_and_cat in enumerate(moved):
+    for i, owner_and_cat in enumerate(owners_and_cats):
+        _attempt_move(owner_and_cat)
         if _is_cat_found_this_turn(owner_and_cat, turn):
             _handle_found_cat(owner_and_cat, i)
-    return moved
 
 
 def are_all_cats_found(owner_and_cats):
@@ -47,9 +44,8 @@ def _attempt_move(owner_and_cat):
     if _is_cat_found(owner_and_cat):
         return owner_and_cat
     else:
-        moved = _attempt_owner_move(owner_and_cat)
-        moved = _attempt_cat_move(moved)
-    return moved
+        _attempt_owner_move(owner_and_cat)
+        _attempt_cat_move(owner_and_cat)
 
 
 def _attempt_owner_move(owner_and_cat):
@@ -60,14 +56,7 @@ def _attempt_owner_move(owner_and_cat):
         exclude_if_possible=visisted_stations
     )
     if next_owner_station is not None:
-        moved = {
-            'owner': owner_and_cat['owner'][::],
-            'cat': owner_and_cat['cat']
-        }
-        moved['owner'].append(next_owner_station)
-        return moved
-    else:
-        return owner_and_cat
+        owner_and_cat['owner'].append(next_owner_station)
 
 
 def _attempt_cat_move(owner_and_cat):
@@ -76,14 +65,7 @@ def _attempt_cat_move(owner_and_cat):
         current_cat_station
     )
     if next_cat_station is not None:
-        moved = {
-            'owner': owner_and_cat['owner'],
-            'cat': owner_and_cat['cat'][::]
-        }
-        moved['cat'].append(next_cat_station)
-        return moved
-    else:
-        return owner_and_cat
+        owner_and_cat['cat'].append(next_cat_station)
 
 
 def _handle_found_cat(owner_and_cat, owner_id):

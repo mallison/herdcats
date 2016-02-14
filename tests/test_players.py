@@ -38,13 +38,11 @@ def test_each_owner_and_cat_attempt_to_move_each_turn(mocker):
     mocker.patch('herdcats.players._print_found_cat')
     mocker.patch('herdcats.tube.close_station')
     move = mocker.patch('herdcats.players._attempt_move')
-    move.side_effect = [1, 2, 3]
     owner_and_cats = 'abc'
     turn = 1
 
-    moved = players.move(owner_and_cats, turn)
+    players.move(owner_and_cats, turn)
 
-    assert moved == [1, 2, 3]
     assert move.call_args_list == [
         (('a',),),
         (('b',),),
@@ -78,16 +76,15 @@ def test_owner_move_attempted_if_cat_not_found(mocker):
     mocker.patch('herdcats.players._is_cat_found').return_value = False
     mocker.patch(
         'herdcats.players._attempt_cat_move'
-    ).return_value = 'owner_and_cat_moved'
+    )
     move_owner = mocker.patch(
         'herdcats.players._attempt_owner_move'
     )
     owner_and_cat = 'owner_and_cat'
 
-    moved = players._attempt_move(owner_and_cat)
+    players._attempt_move(owner_and_cat)
 
     move_owner.assert_called_once_with(owner_and_cat)
-    assert moved == 'owner_and_cat_moved'
 
 
 def test_cat_move_attempted_if_cat_not_found(mocker):
@@ -102,10 +99,9 @@ def test_cat_move_attempted_if_cat_not_found(mocker):
     move_cat.return_value = 'owner_and_cat_moved'
     owner_and_cat = 'owner_and_cat'
 
-    moved = players._attempt_move(owner_and_cat)
+    players._attempt_move(owner_and_cat)
 
-    move_cat.assert_called_once_with('owner_moved')
-    assert moved == 'owner_and_cat_moved'
+    move_cat.assert_called_once_with(owner_and_cat)
 
 
 def test_owner_attempts_to_move_to_conneced_station(mocker):
@@ -168,9 +164,9 @@ def test_owner_moves_to_available_connected_station(mocker):
         'cat': []
     }
 
-    moved = players._attempt_owner_move(owner_and_cat)
+    players._attempt_owner_move(owner_and_cat)
 
-    assert moved['owner'] == [1]
+    assert owner_and_cat['owner'] == [1]
 
 
 def test_owner_doesnt_move_if_no_available_station(mocker):
@@ -188,9 +184,9 @@ def test_owner_doesnt_move_if_no_available_station(mocker):
         'cat': []
     }
 
-    moved = players._attempt_owner_move(owner_and_cat)
+    players._attempt_owner_move(owner_and_cat)
 
-    assert moved is owner_and_cat
+    assert owner_and_cat['owner'] == []
 
 
 def test_cat_attempts_to_move_to_conneced_station(mocker):
@@ -230,9 +226,9 @@ def test_cat_moves_to_available_connected_station(mocker):
         'cat': []
     }
 
-    moved = players._attempt_cat_move(owner_and_cat)
+    players._attempt_cat_move(owner_and_cat)
 
-    assert moved['cat'] == [1]
+    assert owner_and_cat['cat'] == [1]
 
 
 def test_cat_does_not_move_if_no_available_station(mocker):
@@ -250,13 +246,13 @@ def test_cat_does_not_move_if_no_available_station(mocker):
         'cat': []
     }
 
-    moved = players._attempt_cat_move(owner_and_cat)
+    players._attempt_cat_move(owner_and_cat)
 
-    assert moved is owner_and_cat
+    assert owner_and_cat['cat'] == []
 
 
 def test_each_cat_found_this_turn_is_handled(mocker):
-    mocker.patch('herdcats.players._attempt_move').side_effect = 'xyz'
+    mocker.patch('herdcats.players._attempt_move')
     mocker.patch(
         'herdcats.players._is_cat_found_this_turn'
     ).side_effect = [True, False, True]
@@ -267,8 +263,8 @@ def test_each_cat_found_this_turn_is_handled(mocker):
     players.move(owner_and_cats, turn)
 
     assert handle.call_args_list == [
-        (('x', 0),),
-        (('z', 2),),
+        (('a', 0),),
+        (('c', 2),),
     ]
 
 

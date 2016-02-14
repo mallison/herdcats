@@ -18,11 +18,10 @@ def test_players_attempt_to_move_on_each_turn(mocker):
     mocker.patch('herdcats.players.are_all_cats_found').return_value = False
     mocker.patch('herdcats.reporting.print_summary')
     move = mocker.patch('herdcats.players.move')
-    move.return_value = 'moved_players'
 
     simulation.run(3)
 
-    assert move.call_args_list == [(('players', 1),), (('moved_players', 2),)]
+    assert move.call_args_list == [(('players', 1),), (('players', 2),)]
 
 
 def test_simulation_stops_after_MAX_TURNS_turns_if_all_cats_not_found(mocker):
@@ -51,11 +50,11 @@ def test_simulation_stops_if_all_cats_found(mocker):
 
 def test_summary_report_printed_after_simulation(mocker):
     mocker.patch('herdcats.simulation.MAX_TURNS', 5)
-    mocker.patch('herdcats.players.create')
+    mocker.patch('herdcats.players.create').return_value = 'owners_and_cats'
     mocker.patch('herdcats.players.are_all_cats_found').return_value = False
-    mocker.patch('herdcats.players.move').return_value = 'moved_players'
+    mocker.patch('herdcats.players.move')
     report = mocker.patch('herdcats.reporting.print_summary')
 
     simulation.run(3)
 
-    report.assert_called_once_with('moved_players')
+    report.assert_called_once_with('owners_and_cats')

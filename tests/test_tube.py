@@ -90,6 +90,8 @@ def test_close_station(mocker):
 
 
 def test_lazy_load_loads_data_on_first_call(mocker):
+    mocker.patch('herdcats.tube.STATIONS', None)
+    mocker.patch('herdcats.tube.CONNECTIONS', None)
     load_stations = mocker.patch('herdcats.tube._load_stations')
     load_connections = mocker.patch('herdcats.tube._load_connections')
     func = mocker.Mock()
@@ -97,8 +99,8 @@ def test_lazy_load_loads_data_on_first_call(mocker):
 
     decorated_func()
 
-    load_stations.assert_called_once()
-    load_connections.assert_called_once()
+    load_stations.assert_called_once_with()
+    load_connections.assert_called_once_with()
 
 
 def test_lazy_load_doesnt_load_data_on_subsequent_calls(mocker):

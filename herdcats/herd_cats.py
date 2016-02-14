@@ -16,3 +16,7 @@ def main():
                         help=help)
     args = parser.parse_args()
     simulation.run(args.number)
+
+
+if __name__ == '__main__':
+    main()

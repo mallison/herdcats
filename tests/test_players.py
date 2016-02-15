@@ -384,7 +384,8 @@ def test_get_cumulative_min_hops_between_owner_and_cat(mocker):
         'cat': [2, 1]
     }
 
-    assert players.get_cumulative_min_hops_between_owner_and_cat(owner_and_cat) == 6
+    assert players.get_cumulative_min_hops_between_owner_and_cat(
+        owner_and_cat) == 6
 
 
 def test_get_current_stations_returns_owner_station():

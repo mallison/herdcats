@@ -1,4 +1,7 @@
+from collections import Counter
+
 import pytest
+
 from herdcats import metrics
 
 
@@ -50,3 +53,31 @@ def test_get_average_turns_to_find_cat_raises_exception_if_none_found():
     owners_and_cats = []
     with pytest.raises(ValueError):
         metrics.get_average_turns_to_find_cat(owners_and_cats)
+
+
+def test_get_most_visited_station(mocker):
+    mocker.patch(
+        'herdcats.tube.STATIONS',
+        {5: {'name': 'foo'}}
+    )
+    owners_and_cats = [
+        {
+            'owner': [1, 5, 7],
+            'cat': [5, 4, 7]
+        },
+        {
+            'owner': [2, 5, 7, 12],
+            'cat': [5, 4, 5, 3]
+        },
+    ]
+
+    most_visited = metrics.get_most_visited_station(owners_and_cats)
+
+    assert most_visited == 'foo'
+
+
+def test_get_most_common_item_from_counter_result():
+    count = Counter('aabc')
+    most_common = count.most_common(1)
+
+    assert metrics._get_most_common_item(most_common) == 'a'

@@ -55,3 +55,15 @@ def test_summary_prints_average_moves_to_find_cat(mocker, capsys):
     out, __ = capsys.readouterr()
     get_average.assert_called_once_with(owners_and_cats)
     assert 'find a cat: 2' in out
+
+
+def test_summary_prints_most_visited_station(mocker, capsys):
+    get_most_visited = mocker.patch('herdcats.metrics.get_most_visited_station')
+    get_most_visited.return_value = 'foo'
+    owners_and_cats = []
+
+    reporting.print_summary(owners_and_cats)
+    out, __ = capsys.readouterr()
+
+    get_most_visited.assert_called_once_with(owners_and_cats)
+    assert 'most visited station: foo' in out

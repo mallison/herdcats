@@ -12,3 +12,5 @@ def print_summary(owners_and_cats):
         average_turns = metrics.get_average_turns_to_find_cat(owners_and_cats)
         print ('Average number of movements required to find a cat: %d' %
                average_turns)
+    most_visited = metrics.get_most_visited_station(owners_and_cats)
+    print 'The most visited station: %s' % most_visited

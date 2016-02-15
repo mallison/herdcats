@@ -57,7 +57,7 @@ def get_least_lucky_owner(owners_and_cats):
     )
     owner_cumulative_hops_to_cat = Counter(owner_cumulative_hops_to_cat)
     least_lucky_owner = owner_cumulative_hops_to_cat.most_common()[
-        :-len(owner_cumulative_hops_to_cat)-1:-1
+        : -len(owner_cumulative_hops_to_cat) - 1: -1
     ]
     return _get_common_item(least_lucky_owner)
 

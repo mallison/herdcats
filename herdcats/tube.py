@@ -4,10 +4,6 @@ import csv
 import os
 import random
 
-try:
-    from functools import lru_cache
-except ImportError:
-    from backports.functools_lru_cache import lru_cache
 from collections import defaultdict
 from os import path
 
@@ -63,17 +59,9 @@ def get_random_connection(from_station, exclude_if_possible=None):
 
 
 @_lazy_load_data
-@lru_cache()
-def get_min_hops_between(station1, station2):
-    path = graph.find_shortest_path(CONNECTIONS, station1, station2)
-    if path:
-        return len(path)
-    else:
-        # if no path between stations (possible?) return a 'large' number
-        # to place owners who couldn't reach their cats below those that
-        # could in the hierarchy
-        # TODO is this the right approach?
-        return 10000
+def are_connected(station1, station2):
+    """Returns True if station1 and station2 are connected."""
+    return station2 in CONNECTIONS[station1]
 
 
 @_lazy_load_data

@@ -78,13 +78,13 @@ def test_get_most_visited_station(mocker):
 
 def test_get_least_lucky_owner(mocker):
     mocker.patch(
-        'herdcats.players.get_cumulative_min_hops_between_owner_and_cat',
+        'herdcats.players.get_number_of_times_owner_one_hop_away',
     ).side_effect = [1, 2, 3]
     owners_and_cats = [None] * 3
 
     least_lucky = metrics.get_least_lucky_owner(owners_and_cats)
 
-    assert least_lucky == 0
+    assert least_lucky == 2
 
 
 def test_get_most_common_item_from_counter_result():

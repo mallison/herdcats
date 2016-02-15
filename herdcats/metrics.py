@@ -40,25 +40,19 @@ def get_most_visited_station(owners_and_cats):
 
 
 def get_least_lucky_owner(owners_and_cats):
-    """Returns the owner most close to their cat without finding them.
-
-    Where 'most close' is the cumulative minimum stops between owner
-    and cat on each turn.
-
-    """
-    owner_cumulative_hops_to_cat = dict(
+    """Returns owner who was one station away from their cat the most times."""
+    owner_number_of_single_hops_to_cat = dict(
         (
             i,
-            players.get_cumulative_min_hops_between_owner_and_cat(
+            players.get_number_of_times_owner_one_hop_away(
                 owner_and_cat
             )
         )
         for i, owner_and_cat in enumerate(owners_and_cats)
     )
-    owner_cumulative_hops_to_cat = Counter(owner_cumulative_hops_to_cat)
-    least_lucky_owner = owner_cumulative_hops_to_cat.most_common()[
-        : -len(owner_cumulative_hops_to_cat) - 1: -1
-    ]
+    owner_number_of_single_hops_to_cat = Counter(
+        owner_number_of_single_hops_to_cat)
+    least_lucky_owner = owner_number_of_single_hops_to_cat.most_common(1)
     return _get_common_item(least_lucky_owner)
 
 

@@ -5,6 +5,7 @@ def test_summary_prints_total_number_of_cats(mocker, capsys):
     get_total = mocker.patch('herdcats.metrics.get_total_cats')
     mocker.patch('herdcats.metrics.get_total_cats_found')
     mocker.patch('herdcats.metrics.get_average_turns_to_find_cat')
+    mocker.patch('herdcats.metrics.get_least_lucky_owner')
     get_total.return_value = 2
     owners_and_cats = []
 
@@ -17,6 +18,7 @@ def test_summary_prints_total_number_of_cats(mocker, capsys):
 
 
 def test_summary_average_not_printed_if_no_cats_found(mocker, capsys):
+    mocker.patch('herdcats.metrics.get_least_lucky_owner')
     mocker.patch('herdcats.metrics.get_total_cats')
     mocker.patch('herdcats.metrics.get_total_cats_found').return_value = 0
     mocker.patch('herdcats.metrics.get_average_turns_to_find_cat')
@@ -28,6 +30,7 @@ def test_summary_average_not_printed_if_no_cats_found(mocker, capsys):
 
 
 def test_summary_prints_number_of_cats_found(mocker, capsys):
+    mocker.patch('herdcats.metrics.get_least_lucky_owner')
     mocker.patch('herdcats.metrics.get_total_cats')
     get_found = mocker.patch('herdcats.metrics.get_total_cats_found')
     get_found.return_value = 2
@@ -43,6 +46,7 @@ def test_summary_prints_number_of_cats_found(mocker, capsys):
 
 
 def test_summary_prints_average_moves_to_find_cat(mocker, capsys):
+    mocker.patch('herdcats.metrics.get_least_lucky_owner')
     mocker.patch('herdcats.metrics.get_total_cats')
     mocker.patch('herdcats.metrics.get_total_cats_found')
     get_average = mocker.patch(
@@ -58,7 +62,9 @@ def test_summary_prints_average_moves_to_find_cat(mocker, capsys):
 
 
 def test_summary_prints_most_visited_station(mocker, capsys):
-    get_most_visited = mocker.patch('herdcats.metrics.get_most_visited_station')
+    mocker.patch('herdcats.metrics.get_least_lucky_owner')
+    get_most_visited = mocker.patch(
+        'herdcats.metrics.get_most_visited_station')
     get_most_visited.return_value = 'foo'
     owners_and_cats = []
 
@@ -67,3 +73,21 @@ def test_summary_prints_most_visited_station(mocker, capsys):
 
     get_most_visited.assert_called_once_with(owners_and_cats)
     assert 'most visited station: foo' in out
+
+
+def test_summary_prints_least_lucky_owner(mocker, capsys):
+    mocker.patch('herdcats.metrics.get_total_cats_found')
+    mocker.patch('herdcats.metrics.get_average_turns_to_find_cat')
+    mocker.patch(
+        'herdcats.metrics.get_most_visited_station')
+    least_lucky = mocker.patch(
+        'herdcats.metrics.get_least_lucky_owner'
+    )
+    least_lucky.return_value = 1
+    owners_and_cats = ['owners_and_cats']
+
+    reporting.print_summary(owners_and_cats)
+    out, __ = capsys.readouterr()
+
+    least_lucky.assert_called_once_with(owners_and_cats)
+    assert 'least lucky owner: 1' in out

@@ -35,12 +35,35 @@ def get_most_visited_station(owners_and_cats):
         ))
     ).most_common(1)
     if most_visited:
-        most_visited = _get_most_common_item(most_visited)
+        most_visited = _get_common_item(most_visited)
         return tube.get_station_name(most_visited)
 
 
-def _get_most_common_item(counter_most_common):
-    return counter_most_common[0][0]
+def get_least_lucky_owner(owners_and_cats):
+    """Returns the owner most close to their cat without finding them.
+
+    Where 'most close' is the cumulative minimum stops between owner
+    and cat on each turn.
+
+    """
+    owner_cumulative_hops_to_cat = dict(
+        (
+            i,
+            players.get_cumulative_min_hops_between_owner_and_cat(
+                owner_and_cat
+            )
+        )
+        for i, owner_and_cat in enumerate(owners_and_cats)
+    )
+    owner_cumulative_hops_to_cat = Counter(owner_cumulative_hops_to_cat)
+    least_lucky_owner = owner_cumulative_hops_to_cat.most_common()[
+        :-len(owner_cumulative_hops_to_cat)-1:-1
+    ]
+    return _get_common_item(least_lucky_owner)
+
+
+def _get_common_item(common_item):
+    return common_item[0][0]
 
 
 def _get_reunited_owners_and_cats(owners_and_cats):

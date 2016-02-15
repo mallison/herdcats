@@ -374,6 +374,19 @@ def test_cat_and_owner_not_moved_this_turn_when_false():
     assert not players._cat_and_owner_moved_this_turn(owner_and_cat, turn)
 
 
+def test_get_cumulative_min_hops_between_owner_and_cat(mocker):
+    mocker.patch(
+        'herdcats.tube.get_min_hops_between'
+    ).return_value = 3
+    mocker.patch('herdcats.players._get_current_stations').return_value = 1, 2
+    owner_and_cat = {
+        'owner': [1, 2],
+        'cat': [2, 1]
+    }
+
+    assert players.get_cumulative_min_hops_between_owner_and_cat(owner_and_cat) == 6
+
+
 def test_get_current_stations_returns_owner_station():
     owner_and_cat = {
         'owner': [1, 2],

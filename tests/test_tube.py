@@ -81,6 +81,36 @@ def test_get_random_connection_ignores_exclusions_if_theyd_prevent_travel(
     assert set(connection) == set([2, 3, 4])
 
 
+# TODO do something about the lru cache here?
+def test_get_min_hops_between_stations_where_route_exists(mocker):
+    mocker.patch('herdcats.tube.CONNECTIONS', utils.get_connections())
+    find_shortest = mocker.patch(
+        'herdcats.graph.find_shortest_path',
+    )
+    find_shortest.return_value = [1, 3, 2]
+
+    assert tube.get_min_hops_between(1, 2) == 3
+    assert (
+        find_shortest.call_args_list[0] ==
+        ((tube.CONNECTIONS, 1, 2),)
+    )
+
+
+# TODO do something about the lru cache here?
+def test_get_min_hops_between_stations_where_no_route_exists(mocker):
+    mocker.patch('herdcats.tube.CONNECTIONS', utils.get_connections())
+    find_shortest = mocker.patch(
+        'herdcats.graph.find_shortest_path',
+    )
+    find_shortest.return_value = None
+
+    assert tube.get_min_hops_between(3, 4) == 10000
+    assert (
+        find_shortest.call_args_list[0] ==
+        ((tube.CONNECTIONS, 3, 4),)
+    )
+
+
 def test_close_station(mocker):
     mocker.patch('herdcats.tube.STATIONS', utils.get_stations())
 

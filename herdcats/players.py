@@ -30,6 +30,17 @@ def are_all_cats_found(owner_and_cats):
     return not not_found
 
 
+def get_cumulative_min_hops_between_owner_and_cat(owner_and_cat):
+    station_pairs = zip(
+        owner_and_cat['owner'],
+        owner_and_cat['cat'],
+    )
+    return sum(
+        tube.get_min_hops_between(owner_station, cat_station)
+        for owner_station, cat_station in station_pairs
+    )
+
+
 def _create():
     intial_owner_station = tube.get_random_station()
     initial_cat_station = tube.get_random_station(

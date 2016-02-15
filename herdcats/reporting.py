@@ -14,3 +14,8 @@ def print_summary(owners_and_cats):
                average_turns)
     most_visited = metrics.get_most_visited_station(owners_and_cats)
     print 'The most visited station: %s' % most_visited
+    least_lucky_owner = metrics.get_least_lucky_owner(owners_and_cats)
+    if least_lucky_owner:
+        print (
+            'The least lucky owner: %s'
+        ) % least_lucky_owner

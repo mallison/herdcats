@@ -7,9 +7,6 @@ import random
 from collections import defaultdict
 from os import path
 
-from . import graph
-
-
 STATIONS = None
 CONNECTIONS = None
 

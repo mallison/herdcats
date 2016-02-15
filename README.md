@@ -2,7 +2,7 @@
 
 ## Installation
 
-    pip install git+https://github.com/mallison/herdcats.git
+    pip install git+https://github.com/mallison/herdcats.git#egg=herdcats
 
 ## Usage
 
